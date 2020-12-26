@@ -29,6 +29,14 @@
 				width: 10px;
 			}
 
+			.restart {
+				display: none;
+				font-size: 24px;
+				height: 36px;
+				padding: 2px 10px;
+				border: 2px solid #333;
+			}
+
 			/* 棋盘 */
 			.container {
 				display: flex;
@@ -63,6 +71,9 @@
 				当前：<div id="num" class="num">
 				</div>
 			</div>
+			<div id="restart" class="restart" onclick="restart()">
+				重新开始
+			</div>
 		</div>
 		<div id="container" class="container">
 		</div>
@@ -77,23 +88,22 @@
 		let color = 1;
 		let over = false;
 		// 渲染棋盘
-		function show() {
+		function show(type) {
 			// 键盘容器
 			let container = document.getElementById("container");
 			// 清空棋盘
 			container.innerHTML = '';
 
 			let num = document.getElementById("num")
-
+			// 切换棋手
 			num.innerHTML = color === 1 ? "x" : "o";
 
-			if (over) {
+			// 切换 显示/重置
+			if (over || (type === true)) {
 				let info = document.getElementById("info")
-				info.addEventListener("click", () => {
-					restart()
-				})
-				info.innerHTML = '重新开始';
-				
+				info.style.display = type === true ? "flex" : "none";
+				let restart = document.getElementById("restart")
+				restart.style.display = type === true ? "none" : "block";
 			}
 
 			// 渲染棋谱数据
@@ -141,6 +151,7 @@
 			];
 			color = 1;
 			over = false;
+			show(true);
 		}
 
 		// 是否获胜
