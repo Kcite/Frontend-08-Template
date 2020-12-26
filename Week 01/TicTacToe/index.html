@@ -135,11 +135,25 @@
 						alert("游戏结束了！")
 					}
 				} else {
-					color = 3 - color;
-					show();
+					// 是否没有位置可以落子了
+					let over2 = true;
+					for (let x = 0; x < 3; x++) {
+						for (let y = 0; y < 3; y++) {
+							if (data[x][y] === 0) {
+								over2 = false
+							}
+						}
+					}
+					if (over2) {
+						alert("游戏结束了！")
+						over = true;
+						show();
+					} else {
+						color = 3 - color;
+						show();
+					}
 				}
 			}
-
 		}
 
 		// 重新开始
