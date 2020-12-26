@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>TicTacToe</title>
+		<style type="text/css">
+			body {
+				width: 300px;
+				padding: 30px;
+				border: 1px solid #000000;
+			}
+
+			.li-header {
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.title {
+				font-size: 30px;
+				margin-bottom: 15px;
+			}
+
+			.info {
+				display: flex;
+				font-size: 24px;
+			}
+
+			.num {
+				width: 10px;
+			}
+
+			.restart {
+				display: none;
+				font-size: 24px;
+				height: 36px;
+				padding: 2px 10px;
+				border: 2px solid #333;
+			}
+
+			/* 棋盘 */
+			.container {
+				display: flex;
+				flex-wrap: wrap;
+				width: 300px;
+				height: 300px;
+				background-color: #fff;
+			}
+
+			/* 落子区 */
+			.cell {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 98px;
+				border: 1px solid #FFFFFF;
+				color: #fff;
+				background-color: #000;
+				font-size: 110px;
+				height: 98px;
+				line-height: 98px;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="li-header">
+			<div class="title">
+				TicTacToe
+			</div>
+			<div id="info" class="info">
+				当前：<div id="num" class="num">
+				</div>
+			</div>
+			<div id="restart" class="restart" onclick="restart()">
+				重新开始
+			</div>
+		</div>
+		<div id="container" class="container">
+		</div>
+	</body>
+	<script type="text/javascript">
+		// 初始化数据
+		let data = [
+			[0, 0, 0],
+			[0, 0, 0],
+			[0, 0, 0]
+		];
+		let color = 1;
+		let over = false;
+		// 渲染棋盘
+		function show(type) {
+			// 键盘容器
+			let container = document.getElementById("container");
+			// 清空棋盘
+			container.innerHTML = '';
+
+			let num = document.getElementById("num")
+			// 切换棋手
+			num.innerHTML = color === 1 ? "x" : "o";
+
+			// 切换 显示/重置
+			if (over || (type === true)) {
+				let info = document.getElementById("info")
+				info.style.display = type === true ? "flex" : "none";
+				let restart = document.getElementById("restart")
+				restart.style.display = type === true ? "none" : "block";
+			}
+
+			// 渲染棋谱数据
+			for (let x = 0; x < 3; x++) {
+				for (let y = 0; y < 3; y++) {
+					let cell = document.createElement("div");
+					cell.classList.add("cell");
+					cell.innerText = data[x][y] === 1 ? "×" : data[x][y] === 2 ? "o" : "";
+					cell.addEventListener("click", () => move(x, y))
+					container.appendChild(cell);
+				}
+				container.appendChild(document.createElement("br"));
+			}
+		}
+
+		// 监听棋盘点击事件
+		function move(x, y) {
+			console.log('x:', x, 'y:', y);
+			if (data[x][y] === 0) {
+				data[x][y] = color;
+				// 是否有人胜利了
+				if (win()) {
+					// 游戏是否结束了
+					if (!over) {
+						alert(color == 1 ? "x 赢了！" : "o 赢了！")
+						over = true;
+						show(); // 最后一次渲染结果
+					} else {
+						alert("游戏结束了！")
+					}
+				} else {
+					// 是否没有位置可以落子了
+					let over2 = true;
+					for (let x = 0; x < 3; x++) {
+						for (let y = 0; y < 3; y++) {
+							if (data[x][y] === 0) {
+								over2 = false
+							}
+						}
+					}
+					if (over2) {
+						alert("游戏结束了！")
+						over = true;
+						show();
+					} else {
+						color = 3 - color;
+						show();
+					}
+				}
+			}
+		}
+
+		// 重新开始
+		function restart() {
+			data = [
+				[0, 0, 0],
+				[0, 0, 0],
+				[0, 0, 0]
+			];
+			color = 1;
+			over = false;
+			show(true);
+		}
+
+		// 是否获胜
+		function win() {
+			// 横向胜利
+			for (let i = 0; i < 3; i++) {
+				let win = true;
+				for (let j = 0; j < 3; j++) {
+					if (data[i][j] !== color) {
+						win = false;
+					}
+				}
+				if (win) {
+					return true
+				}
+			}
+			// 纵向胜利
+			for (let i = 0; i < 3; i++) {
+				let win = true;
+				for (let j = 0; j < 3; j++) {
+					if (data[j][i] !== color) {
+						win = false;
+					}
+				}
+				if (win) {
+					return true
+				}
+			}
+
+			// \向胜利
+			{
+				let win = true;
+				for (let i = 0; i < 3; i++) {
+					if (data[i][i] !== color) {
+						win = false;
+					}
+				}
+				if (win) {
+					return true
+				}
+			}
+			// /向胜利
+			{
+				let win = true;
+				for (let i = 0; i < 3; i++) {
+					if (data[i][2 - i] !== color) {
+						win = false;
+					}
+				}
+				if (win) {
+					return true
+				}
+			}
+		}
+
+		show(data);
+	</script>
+</html>
