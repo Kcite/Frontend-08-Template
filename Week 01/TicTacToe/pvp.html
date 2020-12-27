@@ -80,11 +80,7 @@
 	</body>
 	<script type="text/javascript">
 		// 初始化数据
-		let data = [
-			[0, 0, 0],
-			[0, 0, 0],
-			[0, 0, 0]
-		];
+		let data = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 		let color = 1;
 		let over = false;
 		// 渲染棋盘
@@ -94,8 +90,21 @@
 			// 清空棋盘
 			container.innerHTML = '';
 
-			let num = document.getElementById("num")
+			// 渲染棋谱数据
+			for (let x = 0; x < 3; x++) {
+				for (let y = 0; y < 3; y++) {
+					let cell = document.createElement("div");
+					cell.classList.add("cell");
+					cell.innerText = data[x * 3 + y] === 1 ? "×" :
+						data[x * 3 + y] === 2 ? "o" : "";
+					cell.addEventListener("click", () => move(x, y))
+					container.appendChild(cell);
+				}
+				container.appendChild(document.createElement("br"));
+			}
+
 			// 切换棋手
+			let num = document.getElementById("num")
 			num.innerHTML = color === 1 ? "x" : "o";
 
 			// 切换 显示/重置
@@ -105,30 +114,18 @@
 				let restart = document.getElementById("restart")
 				restart.style.display = type === true ? "none" : "block";
 			}
-
-			// 渲染棋谱数据
-			for (let x = 0; x < 3; x++) {
-				for (let y = 0; y < 3; y++) {
-					let cell = document.createElement("div");
-					cell.classList.add("cell");
-					cell.innerText = data[x][y] === 1 ? "×" : data[x][y] === 2 ? "o" : "";
-					cell.addEventListener("click", () => move(x, y))
-					container.appendChild(cell);
-				}
-				container.appendChild(document.createElement("br"));
-			}
 		}
 
 		// 监听棋盘点击事件
 		function move(x, y) {
-			console.log('x:', x, 'y:', y);
-			if (data[x][y] === 0) {
-				data[x][y] = color;
+			if (data[x * 3 + y] === 0) {
+				data[x * 3 + y] = color;
 				// 是否有人胜利了
-				if (win()) {
+				if (win(data, color)) {
 					// 游戏是否结束了
 					if (!over) {
-						alert(color == 1 ? "x 赢了！" : "o 赢了！")
+						console.log(color === 1 ? "x" : "o", '本次落子：', 'x:', x, 'y:', y);
+						alert(color === 1 ? "x 赢了！" : "o 赢了！")
 						over = true;
 						show(); // 最后一次渲染结果
 					} else {
@@ -139,7 +136,7 @@
 					let over2 = true;
 					for (let x = 0; x < 3; x++) {
 						for (let y = 0; y < 3; y++) {
-							if (data[x][y] === 0) {
+							if (data[x * 3 + y] === 0) {
 								over2 = false
 							}
 						}
@@ -149,8 +146,14 @@
 						over = true;
 						show();
 					} else {
+
+						console.log(color === 1 ? "x" : "o", '本次落子：', 'x:', x, 'y:', y);
 						color = 3 - color;
 						show();
+						// 是否有人要赢了
+						if (willWin(data, color)) {
+							console.log(color == 1 ? "x 要赢了！" : "o 要赢了！", '落子位置：', willWin(data, color));
+						}
 					}
 				}
 			}
@@ -158,23 +161,19 @@
 
 		// 重新开始
 		function restart() {
-			data = [
-				[0, 0, 0],
-				[0, 0, 0],
-				[0, 0, 0]
-			];
+			data = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 			color = 1;
 			over = false;
-			show(true);
+			show(true); // 重置
 		}
 
 		// 是否获胜
-		function win() {
+		function win(data, color) {
 			// 横向胜利
 			for (let i = 0; i < 3; i++) {
 				let win = true;
 				for (let j = 0; j < 3; j++) {
-					if (data[i][j] !== color) {
+					if (data[i * 3 + j] !== color) {
 						win = false;
 					}
 				}
@@ -186,7 +185,7 @@
 			for (let i = 0; i < 3; i++) {
 				let win = true;
 				for (let j = 0; j < 3; j++) {
-					if (data[j][i] !== color) {
+					if (data[j * 3 + i] !== color) {
 						win = false;
 					}
 				}
@@ -199,7 +198,7 @@
 			{
 				let win = true;
 				for (let i = 0; i < 3; i++) {
-					if (data[i][i] !== color) {
+					if (data[i * 3 + i] !== color) {
 						win = false;
 					}
 				}
@@ -211,13 +210,64 @@
 			{
 				let win = true;
 				for (let i = 0; i < 3; i++) {
-					if (data[i][2 - i] !== color) {
+					if (data[i * 3 + 2 - i] !== color) {
 						win = false;
 					}
 				}
 				if (win) {
 					return true
 				}
+			}
+		}
+		// 克隆数组
+		function clone(data) {
+			return Object.create(data);
+		}
+		// 判定是否有人可以赢
+		function willWin(data, color) {
+			for (let i = 0; i < 3; i++) {
+				for (let j = 0; j < 3; j++) {
+					if (data[i * 3 + j] !== 0) {
+						continue;
+					}
+					let tmp = clone(data);
+					tmp[i * 3 + j] = color;
+					if (win(tmp, color)) {
+						return [i, j];
+					}
+				}
+			}
+			return null;
+		}
+
+		function bestChoice(data, color) {
+			// 胜负分支
+			if (willWin(data, color)) {
+				return {
+					point: willWin(data, color),
+					result: 1
+				}
+			}
+			let result = -1;
+			let point = null;
+			for (let i = 0; i < 3; i++) {
+				for (let j = 0; j < 3; j++) {
+					if (data[i * 3 + 1] !== 0) {
+						continue;
+					}
+					let tmp = clone(data);
+					tmp[i * 3 + 1] = color;
+					let opp = bestChoice(tmp, 3 - color);
+					if (-opp.result >= result) {
+						result = -opp.result;
+						point = [i, j];
+					}
+				}
+			}
+
+			return {
+				point: point,
+				result: point ? result : 0
 			}
 		}
 
