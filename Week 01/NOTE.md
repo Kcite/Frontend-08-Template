@@ -156,5 +156,9 @@ vue
 
 毕业成绩90/讲课
 
+提交格式
 
-
+#学号:G20200447080028
+#班期:第8期
+#小组:第2组
+#作业&总结链接:[](https://github.com/Kcite/Frontend-08-Template/tree/main/Week%2001)

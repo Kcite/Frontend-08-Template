@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			#container {
+				width: 601px;
+				/* 去除行高 */
+				line-height: 0;
+			}
+
+			.cell {
+				display: inline-block;
+				line-height: 6px;
+				width: 5px;
+				height: 5px;
+				background-color: gray;
+				border-bottom: 1px solid white;
+				border-right: 1px solid white;
+				vertical-align: middle;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container"></div>
+		<!-- 数据存入localStorage -->
+		<button type="button" onclick="localStorage['map'] = JSON.stringify(map)">保存</button>
+	</body>
+
+	<script type="text/javascript">
+		// 地图信息
+		let map = localStorage['map'] ? JSON.parse(localStorage["map"]) : Array(10000).fill(0);
+		// 渲染地图
+		let container = document.getElementById("container");
+		for (let y = 0; y < 100; y++) {
+			for (let x = 0; x < 100; x++) {
+				let cell = document.createElement("div");
+				cell.classList.add("cell");
+
+				// 墙 == 黑色
+				if (map[100 * y + x] == 1) {
+					cell.style.backgroundColor = "black";
+				}
+				// mousemove 指针在元素内移动时持续触发
+				cell.addEventListener("mousemove", () => {
+					// 有没有按住鼠标键
+					if (mousedown) {
+						// 是左键/还是右键
+						if (clear) {
+							cell.style.backgroundColor = "";
+							map[100 * y + x] = 0;
+						} else {
+							cell.style.backgroundColor = "black";
+							map[100 * y + x] = 1;
+						}
+					}
+				})
+				container.appendChild(cell);
+			}
+		}
+
+		let mousedown = false; // 鼠标没有点击
+		let clear = false; // 左键
+
+
+		// mousedown 在元素上按下任意鼠标按钮
+		document.addEventListener("mousedown", e => {
+			mousedown = true;
+			clear = (e.which === 3) // 右键为3
+		})
+
+		// mouseup 在元素上释放任意鼠标按键。
+		document.addEventListener("mouseup", () => mousedown = false);
+
+		//contextmenu 右键点击（在右键菜单显示前触发）。 阻止contextmenu默认的点击事件执行
+		document.addEventListener("contextmenu", e => e.preventDefault());
+
+		// 添加sleep
+		function sleep(t) {
+			return new Promise(function(resolve) {
+				setTimeout(resolve, t);
+			})
+		}
+
+		// 广度优先搜索
+		async function findPath(map, start, end) {
+			// 先进先出-数据结构
+			// shift	unshift
+			// push pop
+			// queue	shift	push	广度优先搜索
+			// stack	push pop	深度优先搜索
+			let table = Object.create(map);
+			let queue = [start];
+			// 
+
+			async function insert(x, y, pre) {
+				// 边缘
+				if (x < 0 || x >= 100 || y < 0 || y >= 100) {
+					return;
+				}
+				// 墙
+				if (map[y * 100 + x]) {
+					return;
+				}
+				// await sleep(30);
+				container.children[y * 100 + x].style.backgroundColor = "lightgreen";
+
+				map[y * 100 + x] = pre;
+				queue.push([x, y]);
+			}
+
+
+
+			while (queue.length) {
+				let [x, y] = queue.shift();
+				console.log(x, y);
+				// 找到目标节点
+				if (x === end[0] && y === end[1]) {
+					let path = [];
+					// 寻找路径
+					while (x != start[0] || y != start[1]) {
+						path.push(map[y * 100 + x]);
+						[x, y] = table[y * 100 + x];
+						await sleep(30);
+						container.children[y * 100 + x].style.backgroundColor = "purple";
+					}
+					return path;
+				}
+
+				await insert(x - 1, y, [x, y]);
+				await insert(x, y - 1, [x, y]);
+				await insert(x, y + 1, [x, y]);
+				await insert(x + 1, y, [x, y]);
+				// 添加斜向计算
+				await insert(x - 1, y - 1, [x, y]);
+				await insert(x + 1, y - 1, [x, y]);
+				await insert(x - 1, y + 1, [x, y]);
+				await insert(x + 1, y + 1, [x, y]);
+			}
+			return nall;
+		}
+		findPath(map, [0, 0], [50, 50])
+	</script>
+</html>
