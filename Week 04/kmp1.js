@@ -9,7 +9,7 @@ function kmp(source, pattern) {
 				table[i] = j;
 			} else {
 				if (j > 0) {
-					j = table[i]
+					j = table[j]
 				} else {
 					++i;
 				}
@@ -25,7 +25,7 @@ function kmp(source, pattern) {
 				return true;
 			}
 
-			if (pattern[i] === source[j]) {
+			if (pattern[j] === source[i]) {
 				++i, ++j;
 			} else {
 				if (j > 0) {
@@ -42,3 +42,5 @@ function kmp(source, pattern) {
 
 
 console.log(kmp("Hello", "ll"));
+// console.log(kmp("abcdabcdabcex", "abcdabce"));
+// console.log(kmp("abaababcd", "ababc"))

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+	<script type="text/javascript">
+		let object = {
+			a: 1,
+			b: 2
+		}
+
+		let po = new Proxy(object, {
+			set(obj, prop, val) {
+				console.log(obj, prop, val);
+			}
+		})
+	</script>
+</html>

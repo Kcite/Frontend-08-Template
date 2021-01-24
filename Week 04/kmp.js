@@ -20,4 +20,6 @@ function kmp(source, pattern) {
 }
 
 
-kmp("", "abcdabce")
+// kmp("", "abcdabce")
+kmp("", "aabaac")
+// kmp("", "abcdabce")
