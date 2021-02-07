@@ -1,4 +1,8 @@
 学习笔记
+#学号:G20200447080028
+#班期:第8期
+#小组:第2组
+#作业&总结链接:https://github.com/Kcite/Frontend-08-Template/tree/main/Week%2006
 
 产生式 BNF
 
@@ -45,12 +49,12 @@ if 函数 语法结构
 3、高级语言：高级语言是比较容易使用的语言，例如C语言等，是与计算机型号无关，而且接近人类的自然语言，使用也比较容易。
 课程中的分类
 形式语言--用途
-数据描述语言	JSON、HTML
-编程语言	Python Java PHP
+数据描述语言	JSON、HTML、CSS SQL
+编程语言	Python Java PHP JavaScript C C++ C# 
 
 表达方式
 声明式语言	HTML CSS
-命令式语言 JavaScript
+命令式语言 JavaScript Python Java PHP C C++ C# 
 
 写一段 JS 的函数，把一个 string 它代表的字节给它转换出来，用 UTF8 对 string 进行遍码。
 

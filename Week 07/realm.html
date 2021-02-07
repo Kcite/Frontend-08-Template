@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			#container {
+				width: 100vw;
+				height: 100vh;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- 绘制图容器 -->
+		<div id="container"></div>
+	</body>
+	<!-- 引入g6 -->
+	<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g6-3.1.0/build/g6.js"></script>
+	<script type="text/javascript">
+		// 定义数据源
+		const data = {
+			"id": "JS",
+			"children": []
+		};
+
+		// js对象
+		// function getData() {
+
+		var set = new Set();
+		var objects = [
+			eval,
+			isFinite,
+			isNaN,
+			parseFloat,
+			parseInt,
+			decodeURI,
+			decodeURIComponent,
+			encodeURI,
+			encodeURIComponent,
+			Array,
+			Date,
+			RegExp,
+			Promise,
+			Proxy,
+			Map,
+			WeakMap,
+			Set,
+			WeakSet,
+			Function,
+			Boolean,
+			String,
+			Number,
+			Symbol,
+			Object,
+			Error,
+			EvalError,
+			RangeError,
+			ReferenceError,
+			SyntaxError,
+			TypeError,
+			URIError,
+			ArrayBuffer,
+			SharedArrayBuffer,
+			DataView,
+			Float32Array,
+			Float64Array,
+			Int8Array,
+			Int16Array,
+			Int32Array,
+			Uint8Array,
+			Uint16Array,
+			Uint32Array,
+			Uint8ClampedArray,
+			Atomics,
+			JSON,
+			Math,
+			Reflect
+		];
+
+
+		objects.forEach(o => {
+			set.add(o);
+			let val = {
+				id: o.name || String(o),
+				children: []
+			}
+
+			data.children.push(val);
+		});
+
+		for (var i = 0; i < objects.length; i++) {
+			var o = objects[i]
+			for (var p of Object.getOwnPropertyNames(o)) {
+
+
+				var d = Object.getOwnPropertyDescriptor(o, p)
+
+				// console.log(o);
+				// console.log(d.value);
+
+				if ((d.value !== null && typeof d.value === "object") || (typeof d.value === "function"))
+
+
+					if (!set.has(d.value)) {
+						set.add(d.value), objects.push(d.value);
+
+						// console.log(o);
+						// console.log(o.name);
+						// console.log(d.value);
+						// console.log(d.value.name);
+						// console.log(data.children);
+
+						data.children.forEach(function(item, index, array) {
+							if (item.id === o.name) {
+
+								// console.log(item, index);
+
+								let val = {
+									id: d.value.name || String(o),
+									children: []
+								}
+
+								data.children[index].children.push(val);
+							}
+						});
+
+					}
+
+				if (d.get) {
+					if (!set.has(d.get)) {
+						set.add(d.get), objects.push(d.get);
+
+
+						// console.log(o);
+						// console.log(o.name);
+						// console.log(d.get);
+						// console.log(d.get.name);
+						// console.log(data.children);
+
+						data.children.forEach(function(item, index, array) {
+							if (item.id === o.name) {
+
+								// console.log(item, index);
+
+								let val = {
+									id: d.get.name || String(o),
+									children: []
+								}
+
+
+								data.children[index].children.push(val);
+							}
+						});
+
+
+					}
+				}
+
+
+				if (d.set) {
+					if (!set.has(d.set)) {
+						set.add(d.set), objects.push(d.set);
+
+						// console.log(o);
+						// console.log(o.name);
+						// console.log(d.set);
+						// console.log(d.set.name);
+						// console.log(data.children);
+
+						data.children.forEach(function(item, index, array) {
+							if (item.id === o.name) {
+
+								// console.log(item, index);
+
+								let val = {
+									id: d.set.name || String(o),
+									children: []
+								}
+
+								data.children[index].children.push(val);
+							}
+						});
+					}
+				}
+
+			}
+		}
+
+		// return set;
+		console.log(set);
+		console.log(data);
+
+
+		// }
+		// getData();
+		// console.log(getData());
+
+
+
+		// const map = getData();
+
+
+		// data.children = getChildren(map);
+
+		// function getChildren(root) {
+		// 	console.log(root);
+
+		// 	if (map.has(root)) {
+		// 		return map
+		// 			.get(root)
+		// 			.map((r) => ({
+		// 				id: r.name,
+		// 				label: r.name,
+		// 				children: getChildren(r.prototype),
+		// 			}))
+		// 			.filter((r) => r.id);
+		// 	}
+		// 	return [];
+		// }
+
+
+
+
+
+		const container = document.getElementById('container');
+		const width = container.scrollWidth;
+		const height = container.scrollHeight || 500;
+		const graph = new G6.TreeGraph({
+			container: 'container',
+			width,
+			height,
+			modes: {
+				default: [{
+						type: 'collapse-expand',
+						// onChange: function onChange(item, collapsed) {
+						// 	const data = item.get('model');
+						// 	data.collapsed = collapsed;
+						// 	return true;
+						// },
+					},
+					'drag-canvas',
+					'zoom-canvas',
+				],
+			},
+			defaultNode: {
+				size: 26,
+				anchorPoints: [
+					[0, 0.5],
+					[1, 0.5],
+				],
+			},
+			defaultEdge: {
+				type: 'cubic-horizontal',
+			},
+			layout: {
+				type: 'mindmap',
+				direction: 'LR',
+				getHeight: () => {
+					return 16;
+				},
+				getWidth: () => {
+					return 16;
+				},
+				getVGap: () => {
+					return 10;
+				},
+				getHGap: () => {
+					return 50;
+				},
+			},
+		});
+
+		let centerX = 0;
+		graph.node(function(node) {
+			if (node.id === 'Modeling Methods') {
+				centerX = node.x;
+			}
+
+			return {
+				label: node.id,
+				labelCfg: {
+					position: node.children && node.children.length > 0 ?
+						'left' : node.x > centerX ?
+						'right' : 'left',
+					offset: 5,
+				},
+			};
+		});
+
+		graph.data(data);
+		graph.render();
+		graph.fitView();
+	</script>
+</html>
