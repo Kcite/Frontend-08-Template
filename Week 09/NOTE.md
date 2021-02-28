@@ -60,3 +60,13 @@ css
 
 第四步
 
+
+
+div div #id 
+
+
+
+[0, 0, 0, 0]
+
+
+div .class #id 
