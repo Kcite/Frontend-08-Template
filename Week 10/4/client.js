@@ -35,12 +35,13 @@ class Request {
 				})
 			}
 			connection.on('data', (data) => {
-				console.log(data.toString());
 				parser.receive(data.toString());
 				if (parser.isFinished) {
 					resolve(parser.response);
-					connection.end();
 				}
+				// console.log(parser.statusLine);
+				// console.log(parser.headers);
+				connection.end();
 			});
 			connection.on('error', (err) => {
 				reject(err);
@@ -55,6 +56,10 @@ ${Object.keys(this.headers).map(key => `${key}:${this.headers[key]}`).join('\r\n
 \r
 ${this.bodyText}`
 	}
+}
+
+class Response {
+	
 }
 
 class ResponseParser {
@@ -84,8 +89,7 @@ class ResponseParser {
 		this.statusLine.match(/HTTP\/1.1 ([0-9]+) ([\s\S]+)/);
 		return {
 			statusCode: RegExp.$1,
-			statusText: RegExp,
-			$2,
+			statusText: RegExp.$2,
 			headers: this.headers,
 			body: this.bodyParser.content.join('')
 		}
@@ -140,7 +144,6 @@ class ResponseParser {
 			}
 		} else if (this.current === this.WAITING_BOOY) {
 			this.bodyParser.receiveChar(char);
-			// console.log(char);
 		}
 	}
 }
@@ -210,6 +213,8 @@ void async function () {
 	let response = await request.send();
 
 	let dom = parser.parseHTML(response.body);
+
+	console.log(dom);
 
 	console.log(JSON.stringify(dom, null, "    "));
 }();

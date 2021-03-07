@@ -1,8 +1,9 @@
-// const { match } = require('assert');
 const css = require('css');
+
 const EOF = Symbol("EOF");
 
 let currentToken = null;
+
 let currentAttribute = null; // 属性
 
 let stack = [{ type: "document", children: [] }];
@@ -19,7 +20,7 @@ function match(element, selector) {
 		return false;
 	}
 
-	if (selector, charAt(0) == "#") { // id 选择器
+	if (selector.charAt(0) == "#") { // id 选择器
 		var attr = element.attributes.filter(attr => attr.name === "id")[0];
 		if (attr && attr.value === selector.replace("#", '')) {
 			return true;
@@ -34,16 +35,15 @@ function match(element, selector) {
 			return true;
 		}
 	}
-	return false;
 }
 
 function specificity(selector) {
 	var p = [0, 0, 0, 0];
 	var selectorParts = selector.split(" ");
-	for(var part of selectorParts) {
-		if(part.charAt(0) == "#") {
+	for (var part of selectorParts) {
+		if (part.charAt(0) == "#") {
 			p[1] += 1;
-		} else if(part.charAt(0) == ".") {
+		} else if (part.charAt(0) == ".") {
 			p[2] += 1;
 		} else {
 			p[3] += 1;
@@ -53,13 +53,13 @@ function specificity(selector) {
 }
 
 function compare(sp1, sp2) {
-	if(sp1[0] - sp2[0]){
+	if (sp1[0] - sp2[0]) {
 		return sp1[0] - sp2[0];
 	}
-	if(sp1[1] - sp2[1]){
+	if (sp1[1] - sp2[1]) {
 		return sp1[1] - sp2[1];
 	}
-	if(sp1[2] - sp2[2]){
+	if (sp1[2] - sp2[2]) {
 		return sp1[2] - sp2[2];
 	}
 	return sp1[3] - sp2[3];
@@ -94,24 +94,20 @@ function computeCSS(element) {
 			// 匹配
 			var sp = specificity(rule.selectors[0]);
 			var computedStyle = element.computedStyle;
-			for(var declaration of rule.declarations) {
-				if(!compitedStyle[declaration.property]){
+			for (var declaration of rule.declarations) {
+				if (!compitedStyle[declaration.property]) {
 					compitedStyle[declaration.property] = {}
 				}
-				if(!computedStyle[declaration.property].specificity){
+				if (!computedStyle[declaration.property].specificity) {
 					computedStyle[declaration.property].value = declaration.value;
 					computedStyle[declaration.property].specificity = sp
-				} else if(compare(computedStyle[declaration.property].specificity, sp) < 0){
-					computedStyle[declaration.property].value = declaration.value;
-					computedStyle[declaration.property].specificity = sp
+				} else if (compare(computedStyle[declaration.property].specificity, sp) < 0) {
+					for (var k = 0; k < 4; k++)
+						computedStyle[declaration.property][declaration.value][k] += sp[k];
 				}
-				
 			}
-			
 		}
 	}
-
-	
 }
 
 function emit(token) {
@@ -149,11 +145,11 @@ function emit(token) {
 		}
 
 		currentTextNode = null;
+
 	} else if (token.type = "endTag") {
 		if (top.tagName != token.tagName) {
 			throw new Error("Tag start end doesn't match!")
 		} else {
-			//
 			if (top.tagName === "style") {
 				addCSSRules(top.children[0].content);
 			}
@@ -204,6 +200,10 @@ function tagOpen(c) {
 		}
 		return tagName(c);
 	} else {
+		emit({
+			type: "text",
+			content: c
+		})
 		return;
 	}
 }
@@ -285,7 +285,7 @@ function beforeAttributeValue(c) {
 	} else if (c == "\'") {
 		return singleQuotedAttributeValue;
 	} else if (c == ">") {
-
+		return data;
 	} else {
 		return UnquotedAttributeValue(c);
 	}
@@ -402,6 +402,5 @@ module.exports.parseHTML = function parseHTML(html) {
 		state = state(c);
 	}
 	state = state(EOF);
-	// console.log(stack[0]);
 	return stack[0];
 }

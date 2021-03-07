@@ -11,7 +11,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}\\Week 10\\6\\client.js"
+      "program": "${workspaceFolder}\\Week 10\\4\\client.js"
     }
   ]
 }

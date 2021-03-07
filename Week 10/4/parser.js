@@ -37,7 +37,6 @@ function match(element, selector) {
 			return true;
 		}
 	}
-	return false;
 }
 
 function specificity(selector) {
@@ -79,16 +78,12 @@ function computeCSS(element) {
 		if (!match(element, selectorParts[0])) {
 			continue;
 		}
-
-		let matched = false;
-
 		var j = 1;
 		for (var i = 0; i < elements.length; i++) {
 			if (match(elements[i], selectorParts[j])) {
 				j++;
 			}
 		}
-
 		if (j >= selectorParts.length) {
 			matched = true;
 		}
@@ -105,16 +100,13 @@ function computeCSS(element) {
 					computedStyle[declaration.property].value = declaration.value;
 					computedStyle[declaration.property].specificity = sp
 				} else if (compare(computedStyle[declaration.property].specificity, sp) < 0) {
-					computedStyle[declaration.property].value = declaration.value;
-					computedStyle[declaration.property].specificity = sp
+					for (var k = 0; k < 4; k++)
+						computedStyle[declaration.property][declaration.value][k] += sp[k];
 				}
-
 			}
-
+			console.log(element.computedStyle);
 		}
 	}
-
-
 }
 
 function emit(token) {
@@ -143,6 +135,7 @@ function emit(token) {
 		}
 
 		computeCSS(element);
+		layout(element);
 
 		top.children.push(element);
 		// element.parent = top;
@@ -160,9 +153,9 @@ function emit(token) {
 			if (top.tagName === "style") {
 				addCSSRules(top.children[0].content);
 			}
-			layout(top);
 			stack.pop();
 		}
+		layout(top);
 		currentTextNode = null;
 
 	} else if (token.type == "text") {
@@ -208,6 +201,10 @@ function tagOpen(c) {
 		}
 		return tagName(c);
 	} else {
+		emit({
+			type: "text",
+			content: c
+		})
 		return;
 	}
 }

@@ -22,7 +22,7 @@ function match(element, selector) {
 		return false;
 	}
 
-	if (selector, charAt(0) == "#") { // id 选择器
+	if (selector.charAt(0) == "#") { // id 选择器
 		var attr = element.attributes.filter(attr => attr.name === "id")[0];
 		if (attr && attr.value === selector.replace("#", '')) {
 			return true;
@@ -37,7 +37,6 @@ function match(element, selector) {
 			return true;
 		}
 	}
-	return false;
 }
 
 function specificity(selector) {
@@ -105,16 +104,12 @@ function computeCSS(element) {
 					computedStyle[declaration.property].value = declaration.value;
 					computedStyle[declaration.property].specificity = sp
 				} else if (compare(computedStyle[declaration.property].specificity, sp) < 0) {
-					computedStyle[declaration.property].value = declaration.value;
-					computedStyle[declaration.property].specificity = sp
+					for (var k = 0; k < 4; k++)
+						computedStyle[declaration.property][declaration.value][k] += sp[k];
 				}
-
 			}
-
 		}
 	}
-
-
 }
 
 function emit(token) {
@@ -160,9 +155,9 @@ function emit(token) {
 			if (top.tagName === "style") {
 				addCSSRules(top.children[0].content);
 			}
-			layout(top);
 			stack.pop();
 		}
+		layout(top);
 		currentTextNode = null;
 
 	} else if (token.type == "text") {
@@ -208,6 +203,10 @@ function tagOpen(c) {
 		}
 		return tagName(c);
 	} else {
+		emit({
+			type: "text",
+			content: c
+		})
 		return;
 	}
 }
@@ -289,7 +288,7 @@ function beforeAttributeValue(c) {
 	} else if (c == "\'") {
 		return singleQuotedAttributeValue;
 	} else if (c == ">") {
-
+		return data;
 	} else {
 		return UnquotedAttributeValue(c);
 	}
@@ -406,6 +405,5 @@ module.exports.parseHTML = function parseHTML(html) {
 		state = state(c);
 	}
 	state = state(EOF);
-	// console.log(stack[0]);
 	return stack[0];
 }

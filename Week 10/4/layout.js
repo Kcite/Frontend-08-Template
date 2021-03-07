@@ -122,8 +122,8 @@ function layout(element) {
     elementStyle[mainSize] = 0;
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
-      if (itemStyle[mainSize] !== null || itemStyle[mainSize]) {
-        elementStyle[mainSize] = elementStyle[mainSize];
+      if (itemStyle[mainSize] !== null || itemStyle[mainSize] !== (void 0)) {
+        elementStyle[mainSize] = elementStyle[mainSize] + itemStyle[mainSize];
       }
     }
     isAutoMainSize = true;
@@ -260,7 +260,7 @@ function layout(element) {
     crossSpace = 0;
     elementStyle[crossSize] = 0;
     for (let i = 0; i < flexLines.length; i++) {
-      elementStyle[crossSize] = elementStyle[crossSize] + fle
+      elementStyle[crossSize] = elementStyle[crossSize] + flexLines[i].crossSpace;
     }
   } else {
     crossSpace = style[crossSize]
@@ -329,9 +329,9 @@ function layout(element) {
       }
       if (align === 'stretch') {
         itemStyle[crossStart] = crossBase;
-        itemStyle[crossEnd] = crossBase + crossSign * (itemStyle[crossSize] || lineCrossSize)
+        itemStyle[crossEnd] = crossBase + crossSign * ((itemStyle[crossSize] !== null && itemStyle[crossSize] !== (void 0)) ? itemStyle[crossSize] : lineCrossSize)
 
-        itemStyle[crossSize] = crossSign * (itemStyle[crossSize])
+        itemStyle[crossSize] = crossSign * (itemStyle[crossEnd] - itemStyle[crossStart])
       }
     }
     crossBase += crossSign * (lineCrossSize + step)

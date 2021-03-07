@@ -22,7 +22,7 @@ function match(element, selector) {
 		return false;
 	}
 
-	if (selector, charAt(0) == "#") { // id 选择器
+	if (selector.charAt(0) == "#") { // id 选择器
 		var attr = element.attributes.filter(attr => attr.name === "id")[0];
 		if (attr && attr.value === selector.replace("#", '')) {
 			return true;
