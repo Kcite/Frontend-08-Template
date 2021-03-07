@@ -334,7 +334,7 @@ function layout(element) {
         itemStyle[crossSize] = crossSign * (itemStyle[crossEnd] - itemStyle[crossStart])
       }
     }
-    crossBase += crossSign * (lineCrossSize + step)
+    crossBase += crossSign * (lineCrossSize + step);
   })
   console.log(items);
 }

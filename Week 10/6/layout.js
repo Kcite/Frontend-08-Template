@@ -121,8 +121,8 @@ function layout(element) {
     elementStyle[mainSize] = 0;
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
-      if (itemStyle[mainSize] !== null || itemStyle[mainSize]) {
-        elementStyle[mainSize] = elementStyle[mainSize];
+      if (itemStyle[mainSize] !== null || itemStyle[mainSize] !== (void 0)) {
+        elementStyle[mainSize] = elementStyle[mainSize] + itemStyle[mainSize];
       }
     }
     isAutoMainSize = true;
