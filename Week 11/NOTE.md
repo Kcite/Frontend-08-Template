@@ -36,3 +36,9 @@ first-line
  CSS pseudo-element （CSS伪元素）在某 block-level element （块级元素）的第一行应用样式。第一行的长度取决于很多因素，包括元素宽度，文档宽度和文本的文字大小。
  
  因为这个因素过多，浏览器渲染会很影响性能
+ 
+ 
+ #学号:G20200447080028
+ #班期:第8期
+ #小组:第2组
+ #作业&总结链接:https://github.com/Kcite/Frontend-08-Template/tree/main/Week%2011
