@@ -1,0 +1,13 @@
+<% if (modules !== 'inject') { -%>
+<% include modules/service.spec.header.babel %>
+<% } -%>
+describe('<%- serviceName %> service', () => {
+<% if (modules === 'inject') { -%>
+<% include inject/service.spec.babel %>
+<% } else { -%>
+<% include modules/service.spec.babel %>
+<% } -%>
+  it('should', angular.mock.inject(<%- serviceName %> => {
+    expect(<%- serviceName %>.getData()).toEqual(3);
+  }));
+});

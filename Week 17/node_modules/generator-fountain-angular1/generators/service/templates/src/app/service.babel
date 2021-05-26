@@ -1,0 +1,11 @@
+class <%- serviceName %> {
+  getData() {
+    return 1 + 2;
+  }
+}
+
+<% if (modules === 'inject') { -%>
+<% include inject/service.babel %>
+<% } else { -%>
+<% include modules/service.babel %>
+<% } -%>

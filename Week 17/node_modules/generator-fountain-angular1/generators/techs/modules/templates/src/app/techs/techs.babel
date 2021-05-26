@@ -1,0 +1,19 @@
+class TechsController {
+  /** @ngInject */
+  constructor($http) {
+    $http
+      .get('app/techs/techs.json')
+      .then(response => {
+        this.techs = response.data;
+      });
+  }
+}
+
+export const techs = {
+<% if (modules === 'systemjs') { -%>
+  templateUrl: 'app/techs/techs.html',
+<% } else { -%>
+  template: require('./techs.html'),
+<% } -%>
+  controller: TechsController
+};

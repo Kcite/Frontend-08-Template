@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+<% if (router !== 'none') { -%>
+    <base href="/">
+<% } -%>
+    <meta charset="utf-8">
+    <title>FountainJS</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" href="http://fountainjs.io/assets/imgs/fountain.png" />
+  </head>
+
+  <body>
+<% if (router === 'uirouter') { -%>
+    <ui-view>Loading...</ui-view>
+<% } else if (router === 'router') { -%>
+    <fountain-root>Loading...</fountain-root>
+<% } else { -%>
+    <fountain-app>Loading...</fountain-app>
+<% } -%>
+  </body>
+</html>
